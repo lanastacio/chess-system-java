@@ -35,7 +35,7 @@ public class ChessMatch {
 	
 	public void validateSourcePosition(Position position) {
 		if(!tabuleiro.thereIsAPiece(position)) {
-			throw new ChessException("Não existe peça no lugar de origem");
+			throw new ChessException("Nao existe peca no lugar de origem");
 		}
 	}
 	
