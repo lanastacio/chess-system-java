@@ -37,6 +37,9 @@ public class ChessMatch {
 		if(!tabuleiro.thereIsAPiece(position)) {
 			throw new ChessException("Nao existe peca no lugar de origem");
 		}
+		if(!tabuleiro.peca(position).isThereAnyPossibleMove()) {
+			throw new ChessException("Nao ha Movimentos Possiveis!");
+		}
 	}
 	
 	private Peca makeMove(Position source, Position target) {

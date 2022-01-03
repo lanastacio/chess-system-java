@@ -3,7 +3,7 @@ package chess;
 import boardgame.Peca;
 import boardgame.Tabuleiro;
 
-public class ChessPeca extends Peca {
+public abstract class ChessPeca extends Peca {
 
 	private Color color;
 
