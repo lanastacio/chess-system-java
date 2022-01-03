@@ -9,10 +9,22 @@ import chess.pecas.Torre;
 public class ChessMatch {
 
 	private Tabuleiro tabuleiro;
+	private Color currentPlayer;
+	private int turn;
 
 	public ChessMatch() {
 		tabuleiro = new Tabuleiro(8, 8);
+		turn = 1;
+		currentPlayer = Color.WHITE;
 		initialSetup();
+	}
+
+	public int getTurn() {
+		return turn;
+	}
+
+	public Color getCurrentPlayer() {
+		return currentPlayer;
 	}
 
 	public ChessPeca[][] getPecas() {
@@ -37,12 +49,16 @@ public class ChessMatch {
 		validateSourcePosition(source);
 		validateTargetPosition(source, target);
 		Peca capturedPiece = makeMove(source, target);
+		nextTurn();
 		return (ChessPeca) capturedPiece;
 	}
 
 	public void validateSourcePosition(Position position) {
 		if (!tabuleiro.thereIsAPiece(position)) {
 			throw new ChessException("Nao existe peca no lugar de origem");
+		}
+		if(currentPlayer != ((ChessPeca)tabuleiro.peca(position)).getColor()) {
+			throw new ChessException("A peca escolhida pertence ao adversario");
 		}
 		if (!tabuleiro.peca(position).isThereAnyPossibleMove()) {
 			throw new ChessException("Nao ha Movimentos Possiveis!");
@@ -62,6 +78,11 @@ public class ChessMatch {
 		return capturedPiece;
 	}
 
+	private void nextTurn() {
+		turn++;
+		currentPlayer = (currentPlayer == Color.WHITE) ? Color.BLACK : Color.WHITE;
+	}
+	
 	private void placeNewPiece(char coluna, int linha, ChessPeca peca) {
 		tabuleiro.lugarPeca(peca, new ChessPosition(coluna, linha).toPosition());
 	}
