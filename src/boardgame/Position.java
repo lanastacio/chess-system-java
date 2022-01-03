@@ -4,7 +4,7 @@ public class Position {
 
 	private int linha;
 	private int coluna;
-	
+
 	public Position(int linha, int coluna) {
 		this.linha = linha;
 		this.coluna = coluna;
@@ -26,9 +26,14 @@ public class Position {
 		this.coluna = coluna;
 	}
 	
+	public void setValues(int linha, int coluna) {
+		this.linha = linha;
+		this.coluna = coluna;
+	}
+
 	@Override
 	public String toString() {
 		return linha + ", " + coluna;
 	}
-	
+
 }

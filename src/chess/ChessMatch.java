@@ -29,26 +29,33 @@ public class ChessMatch {
 		Position source = sourcePosition.toPosition();
 		Position target = targetPosition.toPosition();
 		validateSourcePosition(source);
+		validateTargetPosition(source, target);
 		Peca capturedPiece = makeMove(source, target);
-		return (ChessPeca)capturedPiece;
+		return (ChessPeca) capturedPiece;
 	}
-	
+
 	public void validateSourcePosition(Position position) {
-		if(!tabuleiro.thereIsAPiece(position)) {
+		if (!tabuleiro.thereIsAPiece(position)) {
 			throw new ChessException("Nao existe peca no lugar de origem");
 		}
-		if(!tabuleiro.peca(position).isThereAnyPossibleMove()) {
+		if (!tabuleiro.peca(position).isThereAnyPossibleMove()) {
 			throw new ChessException("Nao ha Movimentos Possiveis!");
 		}
 	}
-	
+
+	private void validateTargetPosition(Position source, Position target) {
+		if(!tabuleiro.peca(source).possibleMove(target)) {
+			throw new ChessException("A peca escolhida nao pode ser movida para a posicao de destino");
+		}
+	}
+
 	private Peca makeMove(Position source, Position target) {
 		Peca p = tabuleiro.removePiece(source);
 		Peca capturedPiece = tabuleiro.removePiece(target);
 		tabuleiro.lugarPeca(p, target);
 		return capturedPiece;
 	}
-	
+
 	private void placeNewPiece(char coluna, int linha, ChessPeca peca) {
 		tabuleiro.lugarPeca(peca, new ChessPosition(coluna, linha).toPosition());
 	}
