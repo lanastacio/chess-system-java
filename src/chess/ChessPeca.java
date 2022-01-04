@@ -17,6 +17,10 @@ public abstract class ChessPeca extends Peca {
 		return color;
 	}
 	
+	public ChessPosition getChessPosition() {
+		return ChessPosition.fromPosition(position);
+	}
+	
 	protected boolean isThereOpponentPiece(Position position) {
 		ChessPeca p = (ChessPeca)getTabuleiro().peca(position);
 		return p != null && p.getColor() != color;
