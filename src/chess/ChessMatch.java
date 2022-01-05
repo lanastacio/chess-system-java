@@ -16,6 +16,7 @@ public class ChessMatch {
 	private Color currentPlayer;
 	private int turn;
 	private boolean check;
+	private boolean checkMate;
 
 	private List<Peca> piecesOnTheBoard = new ArrayList<>();
 	private List<Peca> capturedPieces = new ArrayList<>();
@@ -34,9 +35,13 @@ public class ChessMatch {
 	public Color getCurrentPlayer() {
 		return currentPlayer;
 	}
-	
+
 	public boolean getCheck() {
 		return check;
+	}
+
+	public boolean getCheckMate() {
+		return checkMate;
 	}
 
 	public ChessPeca[][] getPecas() {
@@ -61,15 +66,19 @@ public class ChessMatch {
 		validateSourcePosition(source);
 		validateTargetPosition(source, target);
 		Peca capturedPiece = makeMove(source, target);
-		
+
 		if (testCheck(currentPlayer)) {
 			undoMove(source, target, capturedPiece);
 			throw new ChessException("Voce nao pode se colocar em check");
 		}
-		
-		check = (testCheck(opponent(currentPlayer)))? true : false;
-		
-		nextTurn();
+
+		check = (testCheck(opponent(currentPlayer))) ? true : false;
+
+		if (testCheckMate(opponent(currentPlayer))) {
+			checkMate = true;
+		} else {
+			nextTurn();
+		}
 		return (ChessPeca) capturedPiece;
 	}
 
@@ -138,7 +147,8 @@ public class ChessMatch {
 
 	private boolean testCheck(Color color) {
 		Position kingPosition = king(color).getChessPosition().toPosition();
-		List<Peca> opponentPieces = piecesOnTheBoard.stream().filter(x -> ((ChessPeca) x).getColor() == opponent(color)).collect(Collectors.toList());
+		List<Peca> opponentPieces = piecesOnTheBoard.stream().filter(x -> ((ChessPeca) x).getColor() == opponent(color))
+				.collect(Collectors.toList());
 		for (Peca p : opponentPieces) {
 			boolean[][] mat = p.possibleMoves();
 			if (mat[kingPosition.getLinha()][kingPosition.getColuna()]) {
@@ -148,6 +158,32 @@ public class ChessMatch {
 		return false;
 	}
 
+	private boolean testCheckMate(Color color) {
+		if (!testCheck(color)) {
+			return false;
+		}
+		List<Peca> list = piecesOnTheBoard.stream().filter(x -> ((ChessPeca) x).getColor() == color)
+				.collect(Collectors.toList());
+		for (Peca p : list) {
+			boolean[][] mat = p.possibleMoves();
+			for (int i = 0; i < tabuleiro.getLinhas(); i++) {
+				for (int j = 0; j < tabuleiro.getColunas(); j++) {
+					if (mat[i][j]) {
+						Position source = ((ChessPeca) p).getChessPosition().toPosition();
+						Position target = new Position(i, j);
+						Peca capturedPiece = makeMove(source, target);
+						boolean testCheck = testCheck(color);
+						undoMove(source, target, capturedPiece);
+						if (!testCheck) {
+							return false;
+						}
+					}
+				}
+			}
+		}
+		return true;
+	}
+
 	private void placeNewPiece(char coluna, int linha, ChessPeca peca) {
 		tabuleiro.lugarPeca(peca, new ChessPosition(coluna, linha).toPosition());
 		piecesOnTheBoard.add(peca);
@@ -155,18 +191,11 @@ public class ChessMatch {
 
 	private void initialSetup() {
 
-		placeNewPiece('c', 1, new Torre(tabuleiro, Color.WHITE));
-		placeNewPiece('c', 2, new Torre(tabuleiro, Color.WHITE));
-		placeNewPiece('d', 2, new Torre(tabuleiro, Color.WHITE));
-		placeNewPiece('e', 2, new Torre(tabuleiro, Color.WHITE));
-		placeNewPiece('e', 1, new Torre(tabuleiro, Color.WHITE));
-		placeNewPiece('d', 1, new Rei(tabuleiro, Color.WHITE));
+		placeNewPiece('h', 7, new Torre(tabuleiro, Color.WHITE));
+		placeNewPiece('d', 1, new Torre(tabuleiro, Color.WHITE));
+		placeNewPiece('e', 1, new Rei(tabuleiro, Color.WHITE));
 
-		placeNewPiece('c', 7, new Torre(tabuleiro, Color.BLACK));
-		placeNewPiece('c', 8, new Torre(tabuleiro, Color.BLACK));
-		placeNewPiece('d', 7, new Torre(tabuleiro, Color.BLACK));
-		placeNewPiece('e', 7, new Torre(tabuleiro, Color.BLACK));
-		placeNewPiece('e', 8, new Torre(tabuleiro, Color.BLACK));
-		placeNewPiece('d', 8, new Rei(tabuleiro, Color.BLACK));
+		placeNewPiece('b', 8, new Torre(tabuleiro, Color.BLACK));
+		placeNewPiece('a', 8, new Rei(tabuleiro, Color.BLACK));
 	}
 }
