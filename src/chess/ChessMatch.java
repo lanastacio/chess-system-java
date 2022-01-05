@@ -101,7 +101,8 @@ public class ChessMatch {
 	}
 
 	private Peca makeMove(Position source, Position target) {
-		Peca p = tabuleiro.removePiece(source);
+		ChessPeca p = (ChessPeca)tabuleiro.removePiece(source);
+		p.increaseMoveCount();
 		Peca capturedPiece = tabuleiro.removePiece(target);
 		tabuleiro.lugarPeca(p, target);
 
@@ -114,7 +115,8 @@ public class ChessMatch {
 	}
 
 	private void undoMove(Position source, Position target, Peca capturedPiece) {
-		Peca p = tabuleiro.removePiece(target);
+		ChessPeca p = (ChessPeca)tabuleiro.removePiece(target);
+		p.decreaseMoveCount();
 		tabuleiro.lugarPeca(p, source);
 
 		if (capturedPiece != null) {
