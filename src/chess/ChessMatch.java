@@ -115,6 +115,24 @@ public class ChessMatch {
 			capturedPieces.add(capturedPiece);
 		}
 
+		// #Special Move Castling Kingside Rook(Torre)
+		if (p instanceof Rei && target.getColuna() == source.getColuna() + 2) {
+			Position sourceT = new Position(source.getLinha(), source.getColuna() + 3);
+			Position targetT = new Position(source.getLinha(), source.getColuna() + 1);
+			ChessPeca rook = (ChessPeca) tabuleiro.removePiece(sourceT);
+			tabuleiro.lugarPeca(rook, targetT);
+			rook.increaseMoveCount();
+		}
+
+		// #specialmove castling queenside rook
+		if (p instanceof Rei && target.getColuna() == source.getColuna() - 2) {
+			Position sourceT = new Position(source.getLinha(), source.getColuna() - 4);
+			Position targetT = new Position(source.getLinha(), source.getColuna() - 1);
+			ChessPeca torre = (ChessPeca) tabuleiro.removePiece(sourceT);
+			tabuleiro.lugarPeca(torre, targetT);
+			torre.increaseMoveCount();
+		}
+
 		return capturedPiece;
 	}
 
@@ -127,6 +145,24 @@ public class ChessMatch {
 			tabuleiro.lugarPeca(capturedPiece, target);
 			capturedPieces.remove(capturedPiece);
 			piecesOnTheBoard.add(capturedPiece);
+		}
+
+		// #specialmove castling kingside rook
+		if (p instanceof Rei && target.getColuna() == source.getColuna() + 2) {
+			Position sourceT = new Position(source.getLinha(), source.getColuna() + 3);
+			Position targetT = new Position(source.getLinha(), source.getColuna() + 1);
+			ChessPeca torre = (ChessPeca) tabuleiro.removePiece(targetT);
+			tabuleiro.lugarPeca(torre, sourceT);
+			torre.decreaseMoveCount();
+		}
+
+		// #specialmove castling queenside rook
+		if (p instanceof Rei && target.getColuna() == source.getColuna() - 2) {
+			Position sourceT = new Position(source.getLinha(), source.getColuna() - 4);
+			Position targetT = new Position(source.getLinha(), source.getColuna() - 1);
+			ChessPeca torre = (ChessPeca) tabuleiro.removePiece(targetT);
+			tabuleiro.lugarPeca(torre, sourceT);
+			torre.decreaseMoveCount();
 		}
 	}
 
@@ -201,7 +237,7 @@ public class ChessMatch {
 		placeNewPiece('b', 1, new Cavalo(tabuleiro, Color.WHITE));
 		placeNewPiece('c', 1, new Bispo(tabuleiro, Color.WHITE));
 		placeNewPiece('d', 1, new Queen(tabuleiro, Color.WHITE));
-		placeNewPiece('e', 1, new Rei(tabuleiro, Color.WHITE));
+		placeNewPiece('e', 1, new Rei(tabuleiro, Color.WHITE, this));
 		placeNewPiece('f', 1, new Bispo(tabuleiro, Color.WHITE));
 		placeNewPiece('g', 1, new Cavalo(tabuleiro, Color.WHITE));
 		placeNewPiece('h', 1, new Torre(tabuleiro, Color.WHITE));
@@ -218,17 +254,17 @@ public class ChessMatch {
 		placeNewPiece('b', 8, new Cavalo(tabuleiro, Color.BLACK));
 		placeNewPiece('c', 8, new Bispo(tabuleiro, Color.BLACK));
 		placeNewPiece('d', 8, new Queen(tabuleiro, Color.BLACK));
-		placeNewPiece('e', 8, new Rei(tabuleiro, Color.BLACK));
+		placeNewPiece('e', 8, new Rei(tabuleiro, Color.BLACK, this));
 		placeNewPiece('f', 8, new Bispo(tabuleiro, Color.BLACK));
 		placeNewPiece('g', 8, new Cavalo(tabuleiro, Color.BLACK));
 		placeNewPiece('h', 8, new Torre(tabuleiro, Color.BLACK));
 		placeNewPiece('a', 7, new Peao(tabuleiro, Color.BLACK));
-        placeNewPiece('b', 7, new Peao(tabuleiro, Color.BLACK));
-        placeNewPiece('c', 7, new Peao(tabuleiro, Color.BLACK));
-        placeNewPiece('d', 7, new Peao(tabuleiro, Color.BLACK));
-        placeNewPiece('e', 7, new Peao(tabuleiro, Color.BLACK));
-        placeNewPiece('f', 7, new Peao(tabuleiro, Color.BLACK));
-        placeNewPiece('g', 7, new Peao(tabuleiro, Color.BLACK));
-        placeNewPiece('h', 7, new Peao(tabuleiro, Color.BLACK));
+		placeNewPiece('b', 7, new Peao(tabuleiro, Color.BLACK));
+		placeNewPiece('c', 7, new Peao(tabuleiro, Color.BLACK));
+		placeNewPiece('d', 7, new Peao(tabuleiro, Color.BLACK));
+		placeNewPiece('e', 7, new Peao(tabuleiro, Color.BLACK));
+		placeNewPiece('f', 7, new Peao(tabuleiro, Color.BLACK));
+		placeNewPiece('g', 7, new Peao(tabuleiro, Color.BLACK));
+		placeNewPiece('h', 7, new Peao(tabuleiro, Color.BLACK));
 	}
 }
