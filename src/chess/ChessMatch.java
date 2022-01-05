@@ -7,6 +7,10 @@ import java.util.stream.Collectors;
 import boardgame.Peca;
 import boardgame.Position;
 import boardgame.Tabuleiro;
+import chess.pecas.Bispo;
+import chess.pecas.Cavalo;
+import chess.pecas.Peao;
+import chess.pecas.Queen;
 import chess.pecas.Rei;
 import chess.pecas.Torre;
 
@@ -101,7 +105,7 @@ public class ChessMatch {
 	}
 
 	private Peca makeMove(Position source, Position target) {
-		ChessPeca p = (ChessPeca)tabuleiro.removePiece(source);
+		ChessPeca p = (ChessPeca) tabuleiro.removePiece(source);
 		p.increaseMoveCount();
 		Peca capturedPiece = tabuleiro.removePiece(target);
 		tabuleiro.lugarPeca(p, target);
@@ -115,7 +119,7 @@ public class ChessMatch {
 	}
 
 	private void undoMove(Position source, Position target, Peca capturedPiece) {
-		ChessPeca p = (ChessPeca)tabuleiro.removePiece(target);
+		ChessPeca p = (ChessPeca) tabuleiro.removePiece(target);
 		p.decreaseMoveCount();
 		tabuleiro.lugarPeca(p, source);
 
@@ -193,11 +197,38 @@ public class ChessMatch {
 
 	private void initialSetup() {
 
-		placeNewPiece('h', 7, new Torre(tabuleiro, Color.WHITE));
-		placeNewPiece('d', 1, new Torre(tabuleiro, Color.WHITE));
+		placeNewPiece('a', 1, new Torre(tabuleiro, Color.WHITE));
+		placeNewPiece('b', 1, new Cavalo(tabuleiro, Color.WHITE));
+		placeNewPiece('c', 1, new Bispo(tabuleiro, Color.WHITE));
+		placeNewPiece('d', 1, new Queen(tabuleiro, Color.WHITE));
 		placeNewPiece('e', 1, new Rei(tabuleiro, Color.WHITE));
+		placeNewPiece('f', 1, new Bispo(tabuleiro, Color.WHITE));
+		placeNewPiece('g', 1, new Cavalo(tabuleiro, Color.WHITE));
+		placeNewPiece('h', 1, new Torre(tabuleiro, Color.WHITE));
+		placeNewPiece('a', 2, new Peao(tabuleiro, Color.WHITE));
+		placeNewPiece('b', 2, new Peao(tabuleiro, Color.WHITE));
+		placeNewPiece('c', 2, new Peao(tabuleiro, Color.WHITE));
+		placeNewPiece('d', 2, new Peao(tabuleiro, Color.WHITE));
+		placeNewPiece('e', 2, new Peao(tabuleiro, Color.WHITE));
+		placeNewPiece('f', 2, new Peao(tabuleiro, Color.WHITE));
+		placeNewPiece('g', 2, new Peao(tabuleiro, Color.WHITE));
+		placeNewPiece('h', 2, new Peao(tabuleiro, Color.WHITE));
 
-		placeNewPiece('b', 8, new Torre(tabuleiro, Color.BLACK));
-		placeNewPiece('a', 8, new Rei(tabuleiro, Color.BLACK));
+		placeNewPiece('a', 8, new Torre(tabuleiro, Color.BLACK));
+		placeNewPiece('b', 8, new Cavalo(tabuleiro, Color.BLACK));
+		placeNewPiece('c', 8, new Bispo(tabuleiro, Color.BLACK));
+		placeNewPiece('d', 8, new Queen(tabuleiro, Color.BLACK));
+		placeNewPiece('e', 8, new Rei(tabuleiro, Color.BLACK));
+		placeNewPiece('f', 8, new Bispo(tabuleiro, Color.BLACK));
+		placeNewPiece('g', 8, new Cavalo(tabuleiro, Color.BLACK));
+		placeNewPiece('h', 8, new Torre(tabuleiro, Color.BLACK));
+		placeNewPiece('a', 7, new Peao(tabuleiro, Color.BLACK));
+        placeNewPiece('b', 7, new Peao(tabuleiro, Color.BLACK));
+        placeNewPiece('c', 7, new Peao(tabuleiro, Color.BLACK));
+        placeNewPiece('d', 7, new Peao(tabuleiro, Color.BLACK));
+        placeNewPiece('e', 7, new Peao(tabuleiro, Color.BLACK));
+        placeNewPiece('f', 7, new Peao(tabuleiro, Color.BLACK));
+        placeNewPiece('g', 7, new Peao(tabuleiro, Color.BLACK));
+        placeNewPiece('h', 7, new Peao(tabuleiro, Color.BLACK));
 	}
 }
