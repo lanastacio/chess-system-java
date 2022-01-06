@@ -22,6 +22,7 @@ public class ChessMatch {
 	private boolean check;
 	private boolean checkMate;
 	private ChessPeca enPassantVulnerable;
+	private ChessPeca promoted;
 
 	private List<Peca> piecesOnTheBoard = new ArrayList<>();
 	private List<Peca> capturedPieces = new ArrayList<>();
@@ -53,6 +54,10 @@ public class ChessMatch {
 		return enPassantVulnerable;
 	}
 
+	public ChessPeca getPromoted() {
+		return promoted;
+	}
+
 	public ChessPeca[][] getPecas() {
 		ChessPeca[][] mat = new ChessPeca[tabuleiro.getLinhas()][tabuleiro.getColunas()];
 		for (int i = 0; i < tabuleiro.getLinhas(); i++) {
@@ -82,6 +87,16 @@ public class ChessMatch {
 		}
 
 		ChessPeca movedPiece = (ChessPeca) tabuleiro.peca(target);
+
+		// #SpecialMove Promotion
+		promoted = null;
+		if (movedPiece instanceof Peao) {
+			if ((movedPiece.getColor() == Color.WHITE && target.getLinha() == 0)
+					|| (movedPiece.getColor() == Color.BLACK && target.getLinha() == 7)) {
+				promoted = (ChessPeca) tabuleiro.peca(target);
+				promoted = replacePromotedPiece("Q");
+			}
+		}
 
 		check = (testCheck(opponent(currentPlayer))) ? true : false;
 
@@ -118,6 +133,35 @@ public class ChessMatch {
 		if (!tabuleiro.peca(source).possibleMove(target)) {
 			throw new ChessException("A peca escolhida nao pode ser movida para a posicao de destino");
 		}
+	}
+
+	public ChessPeca replacePromotedPiece(String type) {
+		if (promoted == null) {
+			throw new IllegalStateException("Nao tem peca para ser promovida");
+		}
+		if (!type.equals("B") && !type.equals("C") && !type.equals("T") & !type.equals("Q")) {
+			return promoted;
+		}
+
+		Position pos = promoted.getChessPosition().toPosition();
+		Peca p = tabuleiro.removePiece(pos);
+		piecesOnTheBoard.remove(p);
+
+		ChessPeca newPiece = newPiece(type, promoted.getColor());
+		tabuleiro.lugarPeca(newPiece, pos);
+		piecesOnTheBoard.add(newPiece);
+
+		return newPiece;
+	}
+
+	private ChessPeca newPiece(String type, Color color) {
+		if (type.equals("B"))
+			return new Bispo(tabuleiro, color);
+		if (type.equals("C"))
+			return new Cavalo(tabuleiro, color);
+		if (type.equals("Q"))
+			return new Queen(tabuleiro, color);
+		return new Torre(tabuleiro, color);
 	}
 
 	private Peca makeMove(Position source, Position target) {
@@ -235,7 +279,8 @@ public class ChessMatch {
 
 	private boolean testCheck(Color color) {
 		Position kingPosition = king(color).getChessPosition().toPosition();
-		List<Peca> opponentPieces = piecesOnTheBoard.stream().filter(x -> ((ChessPeca) x).getColor() == opponent(color)).collect(Collectors.toList());
+		List<Peca> opponentPieces = piecesOnTheBoard.stream().filter(x -> ((ChessPeca) x).getColor() == opponent(color))
+				.collect(Collectors.toList());
 		for (Peca p : opponentPieces) {
 			boolean[][] mat = p.possibleMoves();
 			if (mat[kingPosition.getLinha()][kingPosition.getColuna()]) {
